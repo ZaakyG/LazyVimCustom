@@ -44,3 +44,13 @@ end
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = set_background_from_os,
 })
+
+-- diagnostics inline
+vim.diagnostic.config({
+  virtual_text = false,
+  signs = true,
+  underline = true,
+  float = {
+    boder = "rounded",
+  },
+})
