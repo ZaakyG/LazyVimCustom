@@ -13,7 +13,7 @@ return {
       },
       menu = {
         border = "rounded",
-        auto_show = false,
+        --   auto_show = false,
       },
     },
     signature = { enabled = false },
