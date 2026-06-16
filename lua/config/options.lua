@@ -4,11 +4,6 @@
 vim.opt.relativenumber = false
 vim.g.snacks_animate = false
 
---vim.opt.laststatus = 2
---vim.opt.statusline = "%f %y %m %=%l:%c"
---vim.opt.statusline = vim.opt.statusline:get()
---    .. " [%{searchcount().current}/%{searchcount().total}]"
-
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 
@@ -21,18 +16,17 @@ local function set_background_from_os()
   end
 
   if result:match("Dark") then
-    --vim.opt.background = "light"
     vim.cmd("colorscheme tokyonight")
   else
-    vim.cmd("colorscheme tokyonight-day")
+    --vim.cmd("colorscheme tokyonight-day")
     --vim.opt.background = "light"
 
     --vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080" })
-    vim.api.nvim_set_hl(0, "CursorLineNr", {
-      bold = true,
-      fg = "#ffffff",
-      bg = "#000000",
-    })
+    --    vim.api.nvim_set_hl(0, "CursorLineNr", {
+    --      bold = true,
+    --      fg = "#ffffff",
+    --      bg = "#000000",
+    --    })
     -- vim.api.nvim_set_hl(0, "CursorLine", {
     --   bg = "#000000",
     --   fg = "#ffffff",
