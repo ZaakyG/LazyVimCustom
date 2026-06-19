@@ -1,0 +1,119 @@
+-- Enable syntax + filetype (mostly automatic in Neovim, but safe)
+vim.cmd("syntax on")
+vim.cmd("filetype plugin indent on")
+
+-- UI
+vim.opt.termguicolors = true
+vim.cmd("colorscheme default")
+
+-- Line numbers + highlighting
+vim.opt.number = true
+vim.opt.showmatch = true
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = "number"
+
+-- Tabs / indentation
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.cindent = true
+
+-- Statusline
+vim.opt.laststatus = 2
+vim.opt.statusline = "%f %y %m %=%l:%c"
+vim.opt.statusline = vim.opt.statusline:get()
+  .. " [%{searchcount().current}/%{searchcount().total}]"
+
+-- Search
+vim.opt.hlsearch = true
+vim.opt.incsearch = true
+
+-- Cursor
+vim.opt.guicursor =
+  "n-v-c:block,i:block-blinkon200-blinkoff150-blinkwait150,r:block"
+
+-- Highlights (equivalent to :highlight)
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080" })
+vim.api.nvim_set_hl(0, "CursorLineNr", {
+  bold = true,
+  fg = "#ffffff",
+  bg = "#000000",
+})
+
+-- Reapply highlights on colorscheme change
+vim.api.nvim_create_augroup("MyColors", { clear = true })
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = "MyColors",
+  callback = function()
+    vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080" })
+    vim.api.nvim_set_hl(0, "CursorLineNr", {
+      bold = true,
+      fg = "#ffffff",
+      bg = "#000000",
+    })
+  end,
+})
+
+-- Function: Set cursor color
+local function set_cursor_color(color)
+  vim.fn.chansend(vim.v.stderr, "\27]12;" .. color .. "\7")
+end
+
+-- Cursor color autocmds
+vim.api.nvim_create_augroup("CursorColor", { clear = true })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = "CursorColor",
+  callback = function()
+    set_cursor_color("white")
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  group = "CursorColor",
+  callback = function()
+    set_cursor_color("gray")
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+  group = "CursorColor",
+  callback = function()
+    set_cursor_color("white")
+  end,
+})
+
+-- Function: detect macOS dark/light mode
+local function set_background_from_os()
+  local handle = io.popen(
+    "defaults read -g AppleInterfaceStyle 2>/dev/null"
+  )
+  local result = ""
+  if handle then
+    result = handle:read("*a")
+    handle:close()
+  end
+
+  if result:match("Dark") then
+    vim.opt.background = "dark"
+  else
+    vim.cmd("colorscheme quiet")
+    vim.opt.background = "light"
+
+    vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080" })
+    vim.api.nvim_set_hl(0, "CursorLineNr", {
+      bold = true,
+      fg = "#ffffff",
+      bg = "#000000",
+    })
+    vim.api.nvim_set_hl(0, "CursorLine", {
+      bg = "#000000",
+      fg = "#ffffff",
+    })
+  end
+end
+
+-- Run on startup
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = set_background_from_os,
+})
